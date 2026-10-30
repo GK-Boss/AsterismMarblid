@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ba32af1a9c7f444ba30737e11b1503, type: 3}
+  m_Name: CheatDrill
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  <ghost>k__BackingField: {fileID: 21300000, guid: e853d7b40d002d846b3f0ff07cfce4fa, type: 3}
+  <prefab>k__BackingField: {fileID: 7811980529456732412, guid: 33dd882689b5db84ebad6bdc798b2fcf, type: 3}
+  unLoaked: 1
+  <isStatic>k__BackingField: 0
+  <defaultHp>k__BackingField: 10000
+  <defaultBuildTime>k__BackingField: 0.1
+  <defaultBuildingCosts>k__BackingField: []
+  <defaultSize>k__BackingField: 1
+  uniqueModule: []
+  defaultModuleSlot: 1
+  modules: []
+  currentModuleSlot: 1
+  useInventory: 1
+  defaultCapasity: 10
+  useTurret: 0
+  defaultPower: 1
+  defaultRate: 1
+  defaultBulletRecipes: []
+  defaultAngleSpeed: 360
+  defaultRange: 10
+  currentPower: 0
+  currentRate: 0
+  currentAngleSpeed: 0
+  currentRange: 0
+  useMining: 1
+  defaultMiningSpeed: 100
+  currentMiningSpeed: 0
+  hpUpConstByModule: 10
+  hpUpRatioByModule: 1.5
+  hpUpConstByAugment: 10
+  hpUpRatioByAugment: 1.5
+  slotUp: 0
+  powerUp_Alpha: 0
+  powerUp_Beta: 0
+  powerUp_Theta: 0
+  speedUpRatio: 0

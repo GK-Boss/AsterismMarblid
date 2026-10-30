@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ba32af1a9c7f444ba30737e11b1503, type: 3}
+  m_Name: PlayerCore
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  <ghost>k__BackingField: {fileID: 21300000, guid: 1b68b904ac010204ca31254c13049798, type: 3}
+  <prefab>k__BackingField: {fileID: 483685364099536592, guid: 13fe2d8e5cf82d54cb18f63b82579e40, type: 3}
+  unLoaked: 0
+  <isStatic>k__BackingField: 1
+  <defaultHp>k__BackingField: 1000
+  <defaultBuildTime>k__BackingField: 0
+  <defaultBuildingCosts>k__BackingField: []
+  <defaultSize>k__BackingField: 3
+  useInventory: 1
+  defaultCapasity: 100
+  currentCapasity: 0
+  useTurret: 0
+  defaultRate: 0
+  currentRate: 0
+  defaultModuleSlot: 1
+  currentModuleSlot: 1
+  modules: []

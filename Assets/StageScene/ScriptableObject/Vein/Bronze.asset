@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b09a9033c7690154e91c5b60d95c48ac, type: 3}
+  m_Name: Bronze
+  m_EditorClassIdentifier: 
+  tileBase: {fileID: 11400000, guid: 7a0d335de5c1af141ae9e220eb843307, type: 2}
+  resource: {fileID: 11400000, guid: 40c6e21e491b2c84492f503f39a8e27c, type: 2}

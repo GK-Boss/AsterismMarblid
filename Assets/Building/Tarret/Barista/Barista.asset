@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ba32af1a9c7f444ba30737e11b1503, type: 3}
+  m_Name: Barista
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  <ghost>k__BackingField: {fileID: 21300000, guid: 47f84f02dd35c4749ac3e0c9dcb19d40, type: 3}
+  <prefab>k__BackingField: {fileID: 6262039567545110983, guid: 3b1a348a62cedc649a0f58f3197fed6a, type: 3}
+  unLoaked: 1
+  <isStatic>k__BackingField: 0
+  <defaultHp>k__BackingField: 30
+  <defaultBuildTime>k__BackingField: 1
+  <defaultBuildingCosts>k__BackingField:
+  - resource: {fileID: 11400000, guid: c6b3d314ee313f94fbee61c4b399805a, type: 2}
+    amount: 30
+  <defaultSize>k__BackingField: 1
+  uniqueModule: []
+  defaultModuleSlot: 1
+  modules: []
+  useInventory: 1
+  defaultCapasity: 10
+  useTurret: 1
+  defaultPower: 1
+  defaultRate: 1
+  defaultBulletRecipes:
+  - active: 1
+    resource: {fileID: 11400000, guid: 67181bea1bdcb0f4fbc5b6800b5996c8, type: 2}
+    bulletPrefab: {fileID: 5376107151607026734, guid: 6099f27793738e74ab7cfe4d4318a4a7, type: 3}
+  defaultAngleSpeed: 360
+  defaultRange: 10
+  currentPower: 0
+  currentAngleSpeed: 0
+  useMining: 0
+  defaultMiningSpeed: 0
+  currentMiningSpeed: 0
+  hpUpConstByModule: 10
+  hpUpRatioByModule: 1.5
+  hpUpConstByAugment: 10
+  hpUpRatioByAugment: 1.5
+  slotUp: 0
+  powerUp_Alpha: 0
+  powerUp_Beta: 0
+  powerUp_Theta: 0
+  speedUpRatio: 0

@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - Enemy
+  - Building
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Grow
+  - Building
+  - Enemy
+  - EnemyBullet
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Tile
+    uniqueID: 2153107935
+    locked: 0
+  - name: Vein
+    uniqueID: 3434505879
+    locked: 0
+  - name: Conveyor
+    uniqueID: 1840253315
+    locked: 0
+  - name: Resource
+    uniqueID: 603730819
+    locked: 0
+  - name: Building
+    uniqueID: 4286015705
+    locked: 0
+  - name: Character
+    uniqueID: 334659407
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 2508894861
+    locked: 0
+  m_RenderingLayers:
+  - Default

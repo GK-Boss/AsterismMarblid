@@ -36,7 +36,7 @@ MonoBehaviour:
   currentPower: 0
   currentAngleSpeed: 0
   useMining: 1
-  defaultMiningSpeed: 0.5
+  defaultMiningSpeed: 5
   currentMiningSpeed: 0
   hpUpConstByModule: 10
   hpUpRatioByModule: 1.5

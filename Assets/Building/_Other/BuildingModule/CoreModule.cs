@@ -1,6 +1,7 @@
+
 using UnityEngine;
 
-[RequireComponent (typeof(InventoryModule))]
+[RequireComponent(typeof(InventoryModule))]
 public class CoreModule : BuildingModule
 {
     private InventoryModule inventory;
@@ -9,15 +10,14 @@ public class CoreModule : BuildingModule
     {
         inventory = GetComponent<InventoryModule>();
     }
+
     public override void OnTick(float dt)
     {
-        for (int i = 0; i < inventory.Count; i++)
+        while (inventory.TryTake(out ResourcePrefab res))
         {
-            if (inventory.TryTake(out ResourcePrefab res))
-            {
-                ResourceManager.instance.Add(res.resource);
-                PoolManager.instance.Release(res);
-            }
+            ResourceManager.instance.Add(res.resource);
+
+            PoolManager.instance.Release(res);
         }
     }
 }

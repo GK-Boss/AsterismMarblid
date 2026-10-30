@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,31 +26,103 @@ public class ResourceOutputModule : BuildingModule
         if (!building) return;
 
         if (building.buildState != BuildingBase.BuildState.Built) return;
+
         timer += inventory.Count <= 0 ? -timer : dt;
+
         if (timer < interval) return;
+
         ResourcePrefab res = inventory.Peek(0);
+
         if (res == null) return;
+
         timer = 0;
+
+        // 建物が占有しているすべてのセルを取得
+        List<Vector3Int> occupiedCells =
+            Utility.PositionAndSizeToAllPosInt(
+                building.transform.position,
+                building.data.currentBuildingSize
+            );
+
+        // 搬出可能な方向と、その方向の搬入先を保存
+        List<Direction> availableDirections = new();
+
+        List<List<ResourceInputModule>> availableInputs = new();
 
         foreach (var localDir in outputDirections)
         {
-            Direction worldDir = Utility.LocalToWorld(localDir, building.GetDirection());
+            Direction worldDir =
+                Utility.LocalToWorld(localDir, building.GetDirection());
 
-            Vector3Int offset = Utility.DirectionToVector(worldDir);
+            Vector3Int offset =
+                Utility.DirectionToVector(worldDir);
 
-            var next = MapManager.instance.GetBuilding(Vector3Int.RoundToInt(transform.position) + offset);
+            // この方向に搬入可能な建物を探す
+            List<ResourceInputModule> inputs = new();
 
-            if (next == null || next.buildState != BuildingBase.BuildState.Built) continue;
-            if (!next.TryGetComponent<ResourceInputModule>(out var input)) continue;
+            foreach (Vector3Int cell in occupiedCells)
+            {
+                Vector3Int targetPos = cell + offset;
 
-            Direction fromDir = Utility.Opposite(worldDir); // 相手からみた搬入方向
+                var next =
+                    MapManager.instance.GetBuilding(targetPos);
 
-            if (!input.CanReceive(fromDir)) continue;
+                if (next == null || next == building) continue;
 
-            res.fromDirection = fromDir;
-            input.Receive(res);
-            inventory.RemoveAt(0);
-            return;
+                if (next.buildState != BuildingBase.BuildState.Built)
+                    continue;
+
+                if (!next.TryGetComponent<ResourceInputModule>(out var input))
+                    continue;
+
+                Direction fromDir = Utility.Opposite(worldDir);
+
+                if (!input.CanReceive(fromDir))
+                    continue;
+
+                // 同じ建物を重複登録しない
+                if (!inputs.Contains(input))
+                {
+                    inputs.Add(input);
+                }
+            }
+
+            // 搬出可能な建物がある方向だけ登録
+            if (inputs.Count > 0 && !availableDirections.Contains(worldDir))
+            {
+                availableDirections.Add(worldDir);
+                availableInputs.Add(inputs);
+            }
         }
+
+        // 搬出可能な方向がなければ終了
+        if (availableDirections.Count <= 0) return;
+
+        // 搬出方向をランダムに選択
+        int directionIndex =
+            Random.Range(0, availableDirections.Count);
+
+        Direction selectedDirection =
+            availableDirections[directionIndex];
+
+        // 選択した方向にある搬入先からランダムに選択
+        List<ResourceInputModule> selectedInputs =
+            availableInputs[directionIndex];
+
+        int inputIndex =
+            Random.Range(0, selectedInputs.Count);
+
+        ResourceInputModule selectedInput =
+            selectedInputs[inputIndex];
+
+        // 相手から見た搬入方向
+        Direction fromDirection =
+            Utility.Opposite(selectedDirection);
+
+        res.fromDirection = fromDirection;
+
+        selectedInput.Receive(res);
+
+        inventory.RemoveAt(0);
     }
 }

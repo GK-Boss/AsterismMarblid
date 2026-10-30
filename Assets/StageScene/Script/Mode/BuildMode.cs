@@ -233,7 +233,6 @@ public class BuildMode : MonoBehaviour
 
     private void Idling()
     {
-        // UI上にマウスがある場合は表示しない
         if (CheckUI())
         {
             buildGhost.enabled = false;
@@ -241,51 +240,85 @@ public class BuildMode : MonoBehaviour
             return;
         }
 
-        if (!selectedBuilding)
-        {
-            buildGhost.enabled = false;
-            return;
-        }
-
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
-        int size = selectedBuilding.currentBuildingSize;
+        MoreDirection previewDirection;
 
-        // ゴーストの中心位置を取得
-        Vector3 ghostPos = GetGhostCenter(mousePos, size);
+        // KeyDown() と同じ方法でマウス位置の象限を判定
+        if (mousePos.x % 1 <= 0.5f * Mathf.Sign(mousePos.x))
+        {
+            if (mousePos.y % 1 <= 0.5f * Mathf.Sign(mousePos.y))
+                previewDirection = MoreDirection.RightUp;
+            else
+                previewDirection = MoreDirection.RightDown;
+        }
+        else
+        {
+            if (mousePos.y % 1 <= 0.5f * Mathf.Sign(mousePos.y))
+                previewDirection = MoreDirection.LeftUp;
+            else
+                previewDirection = MoreDirection.LeftDown;
+        }
 
-        // 建築可能か確認
-        bool canBuild = CanBuildAtPreview(ghostPos, size);
+        Vector3 ghostPos = mousePosInt;
 
-        // スプライト変更
-        if (pastSelectedBuilding != selectedBuilding)
+        // 偶数サイズは建築位置を半マスずらす
+        if (selectedSize % 2 == 0)
+        {
+            switch (previewDirection)
+            {
+                case MoreDirection.RightUp:
+                    ghostPos.x += 0.5f;
+                    ghostPos.y += 0.5f;
+                    break;
+
+                case MoreDirection.RightDown:
+                    ghostPos.x += 0.5f;
+                    ghostPos.y -= 0.5f;
+                    break;
+
+                case MoreDirection.LeftUp:
+                    ghostPos.x -= 0.5f;
+                    ghostPos.y += 0.5f;
+                    break;
+
+                case MoreDirection.LeftDown:
+                    ghostPos.x -= 0.5f;
+                    ghostPos.y -= 0.5f;
+                    break;
+            }
+        }
+
+        bool canBuild = CanBuildPreview(mousePosInt, selectedSize, previewDirection);
+        bool hasEnoughResources = HasEnoughResources(selectedBuilding.currentBuildingCosts);
+
+        if (!canBuild)
+        {
+            buildGhost.color = new Color(1f, 0f, 0f, 0.5f);
+        }
+        else if (!hasEnoughResources)
+        {
+            buildGhost.color = new Color(1f, 0.5f, 0f, 0.5f);
+        }
+        else
+        {
+            buildGhost.color = new Color(0f, 1f, 1f, 0.5f);
+        }
+
+        buildGhost.transform.position = ghostPos;
+        buildGhost.transform.localScale =
+            new Vector3(selectedSize, selectedSize, 1f);
+
+        if (selectedBuilding && pastSelectedBuilding != selectedBuilding)
         {
             buildGhost.sprite = selectedBuilding.ghost;
             pastSelectedBuilding = selectedBuilding;
         }
 
-        // サイズ反映
-        buildGhost.transform.localScale = new Vector3(size, size, 1);
-
-        // 位置反映
-        buildGhost.transform.position = ghostPos;
-
-        // 色変更
-        if (canBuild)
-        {
-            buildGhost.color = new Color(0.3f, 0.9f, 1f, 0.5f);
-        }
-        else
-        {
-            buildGhost.color = new Color(1f, 0.2f, 0.2f, 0.5f);
-        }
-
         buildGhost.enabled = true;
-
         stopConider = false;
     }
-
     /// <summary>
     /// マウス位置から建物の中心位置を取得する。
     /// 奇数サイズは整数座標、偶数サイズは半整数座標。
@@ -345,7 +378,75 @@ public class BuildMode : MonoBehaviour
 
         return true;
     }
+    private bool CanBuildPreview(
+    Vector3Int centerPos,
+    int size,
+    MoreDirection direction)
+    {
+        centerPos.z = 0;
 
+        if (size % 2 == 0)
+        {
+            for (int x = -size / 2 + 1; x <= size / 2; x++)
+            {
+                for (int y = -size / 2 + 1; y <= size / 2; y++)
+                {
+                    Vector3Int checkPos = centerPos;
+
+                    switch (direction)
+                    {
+                        case MoreDirection.RightUp:
+                            checkPos += new Vector3Int(x, y, 0);
+                            break;
+
+                        case MoreDirection.RightDown:
+                            checkPos += new Vector3Int(x, -y, 0);
+                            break;
+
+                        case MoreDirection.LeftUp:
+                            checkPos += new Vector3Int(-x, y, 0);
+                            break;
+
+                        case MoreDirection.LeftDown:
+                            checkPos += new Vector3Int(-x, -y, 0);
+                            break;
+                    }
+
+                    if (!MapManager.instance.GetCanBuild(checkPos))
+                        return false;
+                }
+            }
+        }
+        else
+        {
+            for (int x = -size / 2; x <= size / 2; x++)
+            {
+                for (int y = -size / 2; y <= size / 2; y++)
+                {
+                    Vector3Int checkPos =
+                        centerPos + new Vector3Int(x, y, 0);
+
+                    if (!MapManager.instance.GetCanBuild(checkPos))
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    private bool HasEnoughResources(BuildCost[] costs)
+    {
+        foreach (BuildCost cost in costs)
+        {
+            int requiredAmount = Mathf.CeilToInt(cost.amount);
+            int currentAmount = ResourceManager.instance.Get(cost.resource);
+
+            if (currentAmount < requiredAmount)
+                return false;
+        }
+
+        return true;
+    }
     //private void Idling()
     //{
 

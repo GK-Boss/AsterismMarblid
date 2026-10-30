@@ -21,7 +21,7 @@ MonoBehaviour:
   <defaultBuildingCosts>k__BackingField:
   - resource: {fileID: 11400000, guid: 67181bea1bdcb0f4fbc5b6800b5996c8, type: 2}
     amount: 10
-  <defaultSize>k__BackingField: 1
+  <defaultSize>k__BackingField: 2
   uniqueModule: []
   defaultModuleSlot: 100
   modules:
@@ -35,9 +35,7 @@ MonoBehaviour:
   defaultAngleSpeed: 360
   defaultRange: 10
   currentPower: 0
-  currentRate: 0
   currentAngleSpeed: 0
-  currentRange: 0
   useMining: 0
   defaultMiningSpeed: 0
   currentMiningSpeed: 0

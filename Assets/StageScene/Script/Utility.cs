@@ -1,38 +1,58 @@
+
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public static class Utility
 {
-    private static Dictionary<int, List<Vector3>> sizeToVector = new();
-    public static List<Vector3Int> PositionAndSizeToAllPosInt(Vector3 position, int size)
+    /// <summary>
+    /// 建物の中心座標とサイズから、占有するすべてのセル座標を取得する。
+    ///
+    /// size = 1 : 1x1
+    /// size = 2 : 2x2
+    /// size = 3 : 3x3
+    /// size = 4 : 4x4
+    ///
+    /// 奇数サイズは整数座標が中心。
+    /// 偶数サイズは半整数座標が中心。
+    /// </summary>
+    public static List<Vector3Int> PositionAndSizeToAllPosInt(
+        Vector3 position,
+        int size)
     {
         List<Vector3Int> allPosIntList = new();
 
-        if (!sizeToVector.ContainsKey(size))
+        if (size <= 0)
         {
-            List<Vector3> allVec = new();
-            if (size % 2 == 0)
-                for (float x = -size / 2.0f + 0.5f; x <= size / 2.0f - 0.5f; x++)
-                    for (float y = -size / 2.0f + 0.5f; y <= size / 2.0f - 0.5f; y++)
-                        allVec.Add(new(x, y));
-            else
-                for (int x = -size / 2; x <= size / 2; x++)
-                    for (int y = -size / 2; y <= size / 2; y++)
-                        allVec.Add(new(x, y));
-
-            sizeToVector.Add(size, allVec);
+            Debug.LogError($"Building size is invalid: {size}");
+            return allPosIntList;
         }
 
-        foreach (var vec in sizeToVector[size])
+        // 左下のセルを取得
+        int startX = Mathf.CeilToInt(position.x - size * 0.5f);
+        int startY = Mathf.CeilToInt(position.y - size * 0.5f);
+
+        int z = Mathf.RoundToInt(position.z);
+
+        // サイズ分のセルを登録
+        for (int x = 0; x < size; x++)
         {
-            allPosIntList.Add(Vector3Int.RoundToInt(position + vec));
+            for (int y = 0; y < size; y++)
+            {
+                allPosIntList.Add(
+                    new Vector3Int(
+                        startX + x,
+                        startY + y,
+                        z
+                    )
+                );
+            }
         }
 
         return allPosIntList;
     }
 
     #region Direction
+
     public static Vector3Int DirectionToVector(Direction dir)
     {
         switch (dir)
@@ -53,20 +73,26 @@ public static class Utility
         return Vector3Int.zero;
     }
 
-    public static Direction WorldToLocal(Direction world, Direction buildingDir)
+    public static Direction WorldToLocal(
+        Direction world,
+        Direction buildingDir)
     {
         int w = (int)world;
         int b = (int)buildingDir;
 
         return (Direction)((w - b + 4) % 4);
     }
-    public static Direction LocalToWorld(Direction local, Direction buildingDir)
+
+    public static Direction LocalToWorld(
+        Direction local,
+        Direction buildingDir)
     {
         int l = DirToIndex(local);
         int b = DirToIndex(buildingDir);
 
         return IndexToDir((l + b) % 4);
     }
+
     public static Direction Opposite(Direction dir)
     {
         return IndexToDir((DirToIndex(dir) + 2) % 4);
@@ -91,6 +117,7 @@ public static class Utility
 
         return 0;
     }
+
     public static Direction IndexToDir(int index)
     {
         switch (index)
@@ -110,6 +137,7 @@ public static class Utility
 
         return Direction.Right;
     }
+
     #endregion
 
     #region MoreDirection
@@ -134,7 +162,9 @@ public static class Utility
         return Vector3Int.zero;
     }
 
-    public static MoreDirection Rotate(MoreDirection local, MoreDirection buildingDir)
+    public static MoreDirection Rotate(
+        MoreDirection local,
+        MoreDirection buildingDir)
     {
         int localInt = ToInt(local);
         int rotInt = ToInt(buildingDir);
@@ -175,9 +205,20 @@ public static class Utility
 
 public enum Direction
 {
-    Right, Left, Up, Down
+    Right,
+    Left,
+    Up,
+    Down
 }
+
 public enum MoreDirection
 {
-    Right, Left, Up, Down, RightUp, RightDown, LeftUp, LeftDown
+    Right,
+    Left,
+    Up,
+    Down,
+    RightUp,
+    RightDown,
+    LeftUp,
+    LeftDown
 }

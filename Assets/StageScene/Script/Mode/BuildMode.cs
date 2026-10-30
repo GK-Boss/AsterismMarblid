@@ -27,9 +27,18 @@ public class BuildMode : MonoBehaviour
     void Update()
     {
         selectedBuilding = BuildingSelectCtrl.instance.selectBuilding;
+
         MapManager.instance.SetBuildNum(willBuild.Count);
+
         if (selectedBuilding)
+        {
             Build();
+        }
+        else
+        {
+            buildGhost.enabled = false;
+            pastSelectedBuilding = null;
+        }
     }
     private void Build()
     {
@@ -221,32 +230,149 @@ public class BuildMode : MonoBehaviour
         builtPoint.Clear();
         pastDistance = 0;
     }
+
     private void Idling()
     {
-        if (MapManager.instance.GetCanBuild(mousePosInt) && !CheckUI())
+        // UI上にマウスがある場合は表示しない
+        if (CheckUI())
         {
-            if (MapManager.instance.GetBuilding(mousePosInt))
-            {
-                buildGhost.color = new Color(1, 0, 0, 0.5f);
-                buildGhost.enabled = true;
-            }
-            else
-            {
-                buildGhost.color = new Color(1, 1, 1, 0.5f);
-                buildGhost.enabled = true;
-            }
-        }
-        else
             buildGhost.enabled = false;
+            stopConider = false;
+            return;
+        }
 
-        buildGhost.transform.position = mousePosInt;
-        if (selectedBuilding && pastSelectedBuilding != selectedBuilding)
+        if (!selectedBuilding)
+        {
+            buildGhost.enabled = false;
+            return;
+        }
+
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0;
+
+        int size = selectedBuilding.currentBuildingSize;
+
+        // ゴーストの中心位置を取得
+        Vector3 ghostPos = GetGhostCenter(mousePos, size);
+
+        // 建築可能か確認
+        bool canBuild = CanBuildAtPreview(ghostPos, size);
+
+        // スプライト変更
+        if (pastSelectedBuilding != selectedBuilding)
         {
             buildGhost.sprite = selectedBuilding.ghost;
             pastSelectedBuilding = selectedBuilding;
         }
+
+        // サイズ反映
+        buildGhost.transform.localScale = new Vector3(size, size, 1);
+
+        // 位置反映
+        buildGhost.transform.position = ghostPos;
+
+        // 色変更
+        if (canBuild)
+        {
+            buildGhost.color = new Color(0.3f, 0.9f, 1f, 0.5f);
+        }
+        else
+        {
+            buildGhost.color = new Color(1f, 0.2f, 0.2f, 0.5f);
+        }
+
+        buildGhost.enabled = true;
+
         stopConider = false;
     }
+
+    /// <summary>
+    /// マウス位置から建物の中心位置を取得する。
+    /// 奇数サイズは整数座標、偶数サイズは半整数座標。
+    /// </summary>
+    private Vector3 GetGhostCenter(Vector3 mousePos, int size)
+    {
+        Vector3Int center = Vector3Int.RoundToInt(mousePos);
+
+        if (size % 2 != 0)
+            return center;
+
+        float offsetX;
+        float offsetY;
+
+        if (mousePos.x % 1 <= 0.5f * Mathf.Sign(mousePos.x))
+            offsetX = 0.5f;
+        else
+            offsetX = -0.5f;
+
+        if (mousePos.y % 1 <= 0.5f * Mathf.Sign(mousePos.y))
+            offsetY = 0.5f;
+        else
+            offsetY = -0.5f;
+
+        return new Vector3(
+            center.x + offsetX,
+            center.y + offsetY,
+            0
+        );
+    }
+
+    /// <summary>
+    /// ゴーストの占有範囲全体が建築可能か確認する。
+    /// </summary>
+    private bool CanBuildAtPreview(Vector3 center, int size)
+    {
+        if (size <= 0)
+            return false;
+
+        int startX = Mathf.CeilToInt(center.x - size * 0.5f);
+        int startY = Mathf.CeilToInt(center.y - size * 0.5f);
+
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                Vector3Int pos = new Vector3Int(
+                    startX + x,
+                    startY + y,
+                    0
+                );
+
+                if (!MapManager.instance.GetCanBuild(pos))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    //private void Idling()
+    //{
+
+    //    if (MapManager.instance.GetCanBuild(mousePosInt) && !CheckUI())
+    //    {
+    //        if (MapManager.instance.GetBuilding(mousePosInt))
+    //        {
+    //            buildGhost.color = new Color(1, 0, 0, 0.5f);
+    //            buildGhost.enabled = true;
+    //        }
+    //        else
+    //        {
+    //            buildGhost.color = new Color(1, 1, 1, 0.5f);
+    //            buildGhost.enabled = true;
+    //        }
+    //    }
+    //    else
+    //        buildGhost.enabled = false;
+
+    //    buildGhost.transform.position = mousePosInt;
+    //    if (selectedBuilding && pastSelectedBuilding != selectedBuilding)
+    //    {
+    //        buildGhost.sprite = selectedBuilding.ghost;
+    //        pastSelectedBuilding = selectedBuilding;
+    //    }
+    //    stopConider = false;
+    //}
 
     private bool Build_CheckFirst(Vector3Int centerPos, int size)
     {

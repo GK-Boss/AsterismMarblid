@@ -6,25 +6,11 @@ public class MenuButton : MonoBehaviour
 {
     [SerializeField] private GameObject menu;
 
-    private CameraCtrl cc;
-    private void Start()
-    {
-        menu.SetActive(false);
-    }
     public void SwitchMenu()
     {
-        if (!cc)
-            cc = Camera.main.GetComponent<CameraCtrl>();
-
-        if (menu.activeInHierarchy)
-        {
-            menu.SetActive(false);
-            cc.stop = false;
-        }
+        if (Menu.Menu.instance.isOpen)
+            Menu.Menu.instance.CloseMenu();
         else
-        {
-            menu.SetActive(true);
-            cc.stop = true;
-        }
+            Menu.Menu.instance.OpenMenu();
     }
 }

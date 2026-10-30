@@ -6,6 +6,8 @@ using UnityEngine.Tilemaps;
 
 public class CameraCtrl : MonoBehaviour
 {
+    static public CameraCtrl instance;
+    
     [Header("ƒJƒƒ‰‚Ìİ’è")]
     [SerializeField] private Tilemap tile;
     [Header("ƒJƒƒ‰‚Ìİ’è")]
@@ -19,6 +21,12 @@ public class CameraCtrl : MonoBehaviour
     private Camera cam;
     private float targetSize;
     private Vector3 pastPos;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         cam = GetComponent<Camera>();

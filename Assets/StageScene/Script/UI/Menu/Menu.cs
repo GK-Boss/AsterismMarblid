@@ -8,11 +8,17 @@ namespace Menu
     {
         static public Menu instance;
 
+        [Header("=== 閉じる用 ===")]
+        [SerializeField] private GameObject leftPanel;
+        [SerializeField] private GameObject centerPanel;
+        [SerializeField] private GameObject rightPanel;
+
         [Header("=== 各パネル ===")]
         [SerializeField] private GameObject playerPanel;
         [SerializeField] private GameObject buildingPanel;
         [SerializeField] private GameObject modulePanel;
         [SerializeField] private GameObject settingPanel;
+
         [Header("報酬パネル")]
         [SerializeField] private GameObject rewardPanel;
 
@@ -22,13 +28,20 @@ namespace Menu
         [SerializeField] private Text moduleButtonText;
         [SerializeField] private Text settingButtonText;
 
+        public bool isOpen;
         private void Awake()
         {
             instance = this;
         }
         public void OpenMenu(int panelNum = 0)
         {
-            gameObject.SetActive(true);
+            isOpen = true;
+            CameraCtrl.instance.stop = true;
+
+            leftPanel.SetActive(true);
+            centerPanel.SetActive(true);
+            rightPanel.SetActive(true);
+            CloseAllPanel();
 
             switch (panelNum)
             {
@@ -54,7 +67,11 @@ namespace Menu
         public void CloseMenu()
         {
             CloseAllPanel();
-            gameObject.SetActive(false);
+            leftPanel.SetActive(false);
+            centerPanel.SetActive(false);
+            rightPanel.SetActive(false);
+            isOpen = false;
+            CameraCtrl.instance.stop = false;
         }
 
         public void CloseAllPanel()
